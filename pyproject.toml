@@ -17,6 +17,7 @@ sqlalchemy = "^2.0.42"
 python-jose = "^3.5.0"
 asyncpg = "^0.30.0"
 passlib = {extras = ["bcrypt"], version = "^1.7.4"}
+pre-commit = "^4.2.0"
 
 
 [build-system]
@@ -28,8 +29,8 @@ build-backend = "poetry.core.masonry.api"
 line-length = 99
 preview = true
 exclude = [
-    "migration",
-    "migrations",
+    "src/migration",
+    "src/migrations",
     "alembic.ini",
 ]
 
