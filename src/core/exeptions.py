@@ -11,6 +11,34 @@ __all__ = [
 ]
 
 
+class _RepositoryError(Exception):
+    """Базовая ошибка репозитория"""
+
+
+class MismatchError(_RepositoryError):
+    """Ошибка при несоответствии данных"""
+
+
+class CreationError(_RepositoryError):
+    """Ошибка при создании ресурса"""
+
+
+class AlreadyCreatedError(_RepositoryError):
+    """Ресурс уже был создан"""
+
+
+class ReadingError(_RepositoryError):
+    """Ошибка при чтении данных"""
+
+
+class UpdateError(_RepositoryError):
+    """Ошибка обновления данных"""
+
+
+class DeletionError(_RepositoryError):
+    """Ошибка удаления данных"""
+
+
 class BaseHTTPError(Exception):
     def __init__(self, message: str, code: int) -> None:
         self.code = code if code > MIN_STATUS_CODE else 500

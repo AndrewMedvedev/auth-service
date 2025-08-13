@@ -21,7 +21,13 @@ repos:
         types: [python]
         pass_filenames: true
         always_run: true
-        args: ["--config=pyproject.toml"]
+        args: ["--config=pyproject.toml", "--force-exclude"]
+        exclude: |
+          (?x)^(
+            src/migrations/|  
+            alembic.ini|    
+            .venv/         
+          )
 
   - repo: local
     hooks:

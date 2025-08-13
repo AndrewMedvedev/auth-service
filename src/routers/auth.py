@@ -1,11 +1,11 @@
 from fastapi import APIRouter, status
 from fastapi.responses import JSONResponse
 
-from ..constants import PATH_ENDPOINT
 from ..controllers import AuthControl
-from ..schemas import UserSchema
+from ..core.constants import PATH_ENDPOINT
+from ..core.schemas import UserSchema
 
-auth = APIRouter(prefix=f"{PATH_ENDPOINT}authorization", tags=["authorization"])
+auth = APIRouter(prefix=f"{PATH_ENDPOINT}", tags=["auth"])
 
 
 @auth.post("/registration")
@@ -14,7 +14,7 @@ async def registration(schema: UserSchema) -> JSONResponse:
     return JSONResponse(content=result, status_code=status.HTTP_201_CREATED)
 
 
-@auth.post("/login")
-async def login(schema: UserSchema) -> JSONResponse:
-    result = await AuthControl().login_email(schema)
+@auth.post("/authentication")
+async def authentication(schema: UserSchema) -> JSONResponse:
+    result = await AuthControl().authentication(schema)
     return JSONResponse(content=result, status_code=status.HTTP_200_OK)

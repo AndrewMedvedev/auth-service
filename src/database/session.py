@@ -8,7 +8,7 @@ from ..settings import settings
 
 
 class SQLSessionService:
-    engine: AsyncEngine = create_async_engine(url=settings.sql_settings.get_db_url, echo=True)
+    engine: AsyncEngine = create_async_engine(url=settings.sql_settings.database_url, echo=True)
 
     session_maker: async_sessionmaker[AsyncSession] = async_sessionmaker(
         engine,
