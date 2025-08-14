@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing import Literal
 
+from abc import ABC, abstractmethod
 from urllib.parse import urlencode
 from uuid import UUID, uuid4
 
@@ -79,7 +80,6 @@ class Codes(BaseModel):
 class VKRedirectSchema(BaseModel):
     client_id: str = settings.vk_settings.vk_app_id
     redirect_uri: str = settings.vk_settings.vk_redirect_uri
-    scope: Literal["email"] = "email"
 
     def to_url(self, state: str, code_challenge: str) -> str:
         query = urlencode({
@@ -87,7 +87,7 @@ class VKRedirectSchema(BaseModel):
             "redirect_uri": self.redirect_uri,
             "response_type": "code",
             "state": state,
-            "scope": self.scope,
+            "scope": "email",
             "code_challenge": code_challenge,
             "code_challenge_method": "S256",
         })
@@ -96,24 +96,28 @@ class VKRedirectSchema(BaseModel):
 
 class YandexRedirectSchema(BaseModel):
     client_id: str = settings.yandex_settings.yandex_app_id
-    scope: str = "login:info login:email"
 
     def to_url(self, state: str, code_challenge: str) -> str:
         query = urlencode({
             "client_id": self.client_id,
             "response_type": "code",
             "state": state,
-            "scope": self.scope,
+            "scope": "login:info login:email",
             "code_challenge": code_challenge,
             "code_challenge_method": "S256",
         })
         return f"{settings.yandex_settings.yandex_auth_url}?{query}"
 
 
-class YandexCallbackSchema(BaseModel):
+class BaseCallbackSchema(BaseModel, ABC):
     code: str
     state: str
 
+    @abstractmethod
+    def to_dict(self, code_verifier: str) -> dict: ...
+
+
+class YandexCallbackSchema(BaseCallbackSchema):
     def to_dict(self, code_verifier: str) -> dict:
         return {
             "grant_type": "authorization_code",
@@ -124,10 +128,8 @@ class YandexCallbackSchema(BaseModel):
         }
 
 
-class VKCallbackSchema(BaseModel):
-    code: str
+class VKCallbackSchema(BaseCallbackSchema):
     device_id: str
-    state: str
 
     def to_dict(self, code_verifier: str) -> dict:
         return {

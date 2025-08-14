@@ -1,10 +1,10 @@
-from ..core.base import BaseOauth
+from ..core.base import BaseProvider
 from ..core.exeptions import BadRequestHTTPError
 from ..core.schemas import Codes, VKCallbackSchema, VKRedirectSchema
 from ..rest import VKApi
 
 
-class VKControl(BaseOauth):
+class VKControl(BaseProvider):
     name = "VK"
 
     def __init__(self) -> None:

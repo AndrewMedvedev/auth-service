@@ -7,7 +7,7 @@ from ..database.repository import IdentityRepository, UserIdentityRepository
 from ..jwt import JWTCreate
 from ..storage import RedisStorage
 from .exeptions import NotFoundHTTPError
-from .schemas import UserIdentitySchema
+from .schemas import BaseCallbackSchema, UserIdentitySchema
 
 
 class LoggerMixin:
@@ -43,7 +43,7 @@ class BaseOauthAPI(LoggerMixin, ABC):
     async def get_data(self, schema: dict) -> UserIdentitySchema: ...
 
 
-class BaseOauth(ABC):
+class BaseProvider(ABC):
     name: str
 
     def __init__(self, api: BaseOauthAPI) -> None:
@@ -56,11 +56,11 @@ class BaseOauth(ABC):
     @abstractmethod
     async def generate_url(self) -> str: ...
 
-    async def callback(self, schema: BaseModel) -> BaseModel:
-        code_verifier = await self.redis.get(schema.state)  # type: ignore  # noqa: PGH003
-        return await self.api.get_access_token(schema.to_dict(code_verifier=code_verifier))  # type: ignore  # noqa: PGH003
+    async def callback(self, schema: BaseCallbackSchema) -> BaseModel:
+        code_verifier = await self.redis.get(schema.state)
+        return await self.api.get_access_token(schema.to_dict(code_verifier=code_verifier))
 
-    async def registration(self, schema: BaseModel) -> dict:
+    async def registration(self, schema: BaseCallbackSchema) -> dict:
         data = await self.callback(schema)
         provider_id = await self.identity_repository.get_by_name(self.name)
         if provider_id is None:
@@ -69,3 +69,6 @@ class BaseOauth(ABC):
         user_data.provider_id = provider_id
         user_id = await self.user_repository.create(user_data)
         return await self.jwt.create_tokens(user_id=user_id)
+
+    @abstractmethod
+    async def authentication(self, *args, **kwargs) -> dict: ...

@@ -1,10 +1,10 @@
-from ..core.base import BaseOauth
+from ..core.base import BaseProvider
 from ..core.exeptions import BadRequestHTTPError
 from ..core.schemas import Codes, YandexCallbackSchema, YandexRedirectSchema
 from ..rest import YandexApi
 
 
-class YandexControl(BaseOauth):
+class YandexControl(BaseProvider):
     name = "Yandex"
 
     def __init__(self) -> None:
