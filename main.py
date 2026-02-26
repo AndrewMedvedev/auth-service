@@ -1,5 +1,6 @@
 import typing as t
 
+import uvicorn
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
@@ -57,3 +58,6 @@ def include_routers(app: FastAPI):
 
 
 include_routers(app)
+
+if __name__ == "__main__":
+    uvicorn.run(app, host="0.0.0.0", port=8000)  # noqa: S104

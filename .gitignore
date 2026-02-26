@@ -81,7 +81,7 @@ secrets.env
 documents
 documents_library
 knowledge_base
-scripts
+
 .docker
 DIORag.iml
 assets
