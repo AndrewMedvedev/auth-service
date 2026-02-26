@@ -1,0 +1,15 @@
+alembic==1.16.4
+asyncpg==0.30.0
+authlib==1.6.1
+fastapi[all]==0.116.1
+greenlet==3.3.2
+mypy==1.17.1
+passlib[bcrypt]==1.7.4
+pre-commit==4.2.0
+pydantic-settings==2.10.1
+python-jose==3.5.0
+redis[asyncio]==6.3.0
+ruff==0.12.7
+sqlalchemy==2.0.42
+vulture==2.14
+aiohttp==3.12.15
