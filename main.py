@@ -1,10 +1,15 @@
 import typing as t
 
+from contextlib import asynccontextmanager
+
 import uvicorn
+from alembic import command
+from alembic.config import Config
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
+from scripts import create_identity
 from src.core.exeptions import (
     BadRequestHTTPError,
     BaseHTTPError,
@@ -14,7 +19,17 @@ from src.core.exeptions import (
 )
 from src.routers import router
 
-app = FastAPI(title="Registration service")
+
+@asynccontextmanager
+async def lifespan(_: FastAPI):
+    alembic_cfg = Config("alembic.ini")
+    command.upgrade(alembic_cfg, "head")
+    print("Миграции успешно применены.")
+    await create_identity.main()
+    yield
+
+
+app = FastAPI(title="Registration service", lifespan=lifespan)
 
 
 @app.exception_handler(Exception)
