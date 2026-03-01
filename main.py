@@ -22,9 +22,6 @@ from src.routers import router
 
 @asynccontextmanager
 async def lifespan(_: FastAPI):
-    alembic_cfg = Config("alembic.ini")
-    command.upgrade(alembic_cfg, "head")
-    print("Миграции успешно применены.")
     await create_identity.main()
     yield
 
@@ -75,4 +72,7 @@ def include_routers(app: FastAPI):
 include_routers(app)
 
 if __name__ == "__main__":
+    alembic_cfg = Config("alembic.ini")
+    command.upgrade(alembic_cfg, "head")
+    print("Миграции успешно применены.")
     uvicorn.run(app, host="0.0.0.0", port=8000)  # noqa: S104
